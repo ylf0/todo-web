@@ -1,6 +1,11 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { createStore } from 'vuex'
+import { ElButton, ElCheckbox, ElDrawer } from 'element-plus'
+
+import 'element-plus/lib/theme-chalk/el-button.css'
+import 'element-plus/lib/theme-chalk/el-checkbox.css'
+import 'element-plus/lib/theme-chalk/el-drawer.css'
 
 import { ITodo } from './types'
 import routes from './routes'
@@ -48,4 +53,10 @@ router.beforeEach(
 )
 
 // Install the store instance as a plugin.
-app.use(router).use(store).mount('#app')
+app
+  .use(router)
+  .use(store)
+  .use(ElButton)
+  .use(ElCheckbox)
+  .use(ElDrawer)
+  .mount('#app')
