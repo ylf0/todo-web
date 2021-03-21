@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { createStore } from 'vuex'
 import {
   ElButton,
   ElCheckbox,
@@ -28,46 +27,16 @@ import 'element-plus/lib/theme-chalk/el-icon.css'
 import 'element-plus/lib/theme-chalk/el-input.css'
 import 'element-plus/lib/theme-chalk/el-date-picker.css'
 
-import { ITodo } from './types'
 import routes from './routes'
-
+import store from './store'
 import App from './App.vue'
 import './index.css'
-
-interface IStoreState {
-  todolists: ITodo[]
-}
 
 locale(lang)
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes
-})
-
-/**
- * why Vuex:
- *  - reactive
- *  - manage state
- */
-
-// Create a new store instance.
-const store = createStore({
-  state() {
-    return {
-      todolists: [
-        { title: 'mock-data-1', done: false },
-        { title: 'mock-data-2', done: false },
-        { title: 'mock-data-3', done: true }
-      ]
-    }
-  },
-
-  mutations: {
-    addTodo (state: IStoreState, todo: ITodo) {
-      state.todolists.push(todo)
-    }
-  }
 })
 
 const app = createApp(App)

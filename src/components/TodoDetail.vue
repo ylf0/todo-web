@@ -1,9 +1,9 @@
 <template>
   <div class="h-screen p-6 antialiased">
-    <div class="flex justify-between items-center w-full">
+    <div class="flex justify-between items-center py-2 w-full">
       <el-dropdown trigger="click">
         <span>收集箱</span>
-        <i class="el-icon-arrow-down"/>
+        <i class="el-icon-arrow-down ml-1"/>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>收集箱一</el-dropdown-item>
@@ -23,21 +23,30 @@
       type="textarea"
       :autosize="{ minRows: 1, maxRows: 4 }"
       placeholder="添加描述"
-      v-model="desc"
+      v-model="todo.desc"
+      @change="value => $emit('desc-change', value)"
     />
     <el-divider class="mt-4 mb-2"/>
     <p class="mb-2 text-sm text-gray-500">截止日期</p>
-    <el-date-picker type="datetime" placeholder="设定截止日期" />
+    <el-date-picker
+      type="date"
+      placeholder="设定截止日期"
+      v-model="todo.endDate"
+      @change="value => $emit('end-date-change', value)"
+    />
     <el-divider class="mt-4 mb-2"/>
     <p class="mb-2 text-sm text-gray-500">优先级</p>
-    <el-dropdown trigger="click">
-      <span>设定优先级</span>
+    <el-dropdown trigger="click" @command="index => $emit('priority-change', index)">
+      <span>{{ typeof todo.priorityType === 'number' ? priorityOptions[todo.priorityType].name : '设定优先级' }}</span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>不紧急</el-dropdown-item>
-          <el-dropdown-item>一般</el-dropdown-item>
-          <el-dropdown-item>较紧急</el-dropdown-item>
-          <el-dropdown-item>紧急</el-dropdown-item>
+          <el-dropdown-item
+            v-for="option in priorityOptions"
+            :key="option.key"
+            :command="option.key"
+          >
+            {{ option.name }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -54,18 +63,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+import { PRIORITY_OPTIONS } from '@/constants'
+
 export default defineComponent({
   name: 'TodoDetail',
-
-  data() {
-    return {
-      desc: ''
-    }
-  },
 
   props: {
     todo: Object
   },
+
+  data() {
+    return {
+      // TODO: 常量怎么在 <template/> 里使用呢？
+      priorityOptions: PRIORITY_OPTIONS
+    }
+  }
 })
 </script>
 

@@ -14,7 +14,7 @@
     <div class="mt-4">
       <div
         class="flex items-center py-2 rounded cursor-pointer hover:bg-gray-100"
-        v-for="(todo, index) in todolists"
+        v-for="(todo, index) in todos"
         :key="index"
         @click="() => handleShowDrawer(todo)"
       >
@@ -24,7 +24,12 @@
       </div>
     </div>
     <el-drawer :with-header="false" v-model="showDrawer" @close="handleCloseDrawer">
-      <todo-detail :todo="currTodo" />
+      <todo-detail
+        :todo="currTodo"
+        @desc-change="handleDescChange"
+        @end-date-change="handleEndDateChange"
+        @priority-change="handlePriorityChange"
+      />
     </el-drawer>
   </div>
 </template>
@@ -38,14 +43,24 @@ interface IState {
   currTodo?: ITodo
 }
 
+const emptyTodo: ITodo = {
+  id: '',
+  title: '',
+  done: false,
+  desc: '',
+  endDate: undefined,
+  priorityType: undefined,
+  subTaskIds: undefined
+}
+
 export default {
   components: { TodoDetail },
   name: 'Todo',
 
   data(): IState {
     return {
-      showDrawer: true,
-      currTodo: undefined
+      showDrawer: false,
+      currTodo: emptyTodo
     }
   },
 
@@ -58,14 +73,15 @@ export default {
   },
 
   computed: {
-    todolists() {
-      return this.$store.state.todolists
+    todos() {
+      return this.$store.state.todo.todos
     }
   },
 
   methods: {
     addTodo(todo: ITodo) {
-      this.$store.commit('addTodo', todo)
+      const { getters, commit } = this.$store
+      commit('addTodo', { id: getters.nextId, ...todo })
     },
 
     handleKeyDown(e: any) {
@@ -85,8 +101,20 @@ export default {
     },
 
     handleCloseDrawer() {
-      this.currTodo = undefined
+      this.currTodo = emptyTodo
       this.showDrawer = false
+    },
+
+    handleDescChange(value: string) {
+      this.$store.commit('updateTodo', { ...this.currTodo, desc: value })
+    },
+
+    handleEndDateChange(value: any) {
+      this.$store.commit('updateTodo', { ...this.currTodo, endDate: value.toString() })
+    },
+
+    handlePriorityChange(index: number) {
+      this.$store.commit('updateTodo', { ...this.currTodo, priorityType: index })
     },
   }
 }
