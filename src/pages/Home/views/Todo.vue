@@ -4,7 +4,7 @@
       <div class="flex-1 px-4 py-2 border border-gray-300 border-solid rounded bg-gray-100">
         <input
           class="w-full bg-transparent outline-none tracking-wider"
-          placeholder="回车快速创建 todo"
+          placeholder="回车创建 todo"
           v-model="inputValue"
           @keydown="handleKeyDown"
         />
@@ -16,29 +16,44 @@
         class="flex items-center py-2 rounded cursor-pointer hover:bg-gray-100"
         v-for="(todo, index) in todolists"
         :key="index"
-        @click="showDrawer = true"
+        @click="() => handleShowDrawer(todo)"
       >
         <el-checkbox class="ml-2" v-model="todo.done" @change="handleCheckboxChange(todo)">
           {{ todo.title }}
         </el-checkbox>
       </div>
     </div>
+    <el-drawer :with-header="false" v-model="showDrawer" @close="handleCloseDrawer">
+      <todo-detail :todo="currTodo" />
+    </el-drawer>
   </div>
-  <el-drawer title="待办详情" v-model="showDrawer" @handleClose="showDrawer = false">
-    <span>待办详情</span>
-  </el-drawer>
 </template>
 
 <script lang="ts">
-import { ITodo } from '../../../types'
+import { ITodo } from '@/types'
+import TodoDetail from '@/components/TodoDetail.vue'
+
+interface IState {
+  showDrawer: boolean
+  currTodo?: ITodo
+}
 
 export default {
+  components: { TodoDetail },
   name: 'Todo',
 
+  data(): IState {
+    return {
+      showDrawer: true,
+      currTodo: undefined
+    }
+  },
+
+  // TODO: 为啥 showDrawer 放在 setup() 里只能响应变化一次？
+  // TODO: setup() 具体是啥机制呢？
   setup() {
     return {
-      inputValue: '',
-      showDrawer: false,
+      inputValue: ''
     }
   },
 
@@ -62,7 +77,23 @@ export default {
 
     // TODO: 黑人问号？？？为啥可以自动更新 todo.done？？
     handleCheckboxChange(todo: ITodo) {
-    }
+    },
+
+    handleShowDrawer(todo: ITodo) {
+      this.currTodo = todo
+      this.showDrawer = true
+    },
+
+    handleCloseDrawer() {
+      this.currTodo = undefined
+      this.showDrawer = false
+    },
   }
 }
 </script>
+
+<style>
+.el-overlay {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+</style>

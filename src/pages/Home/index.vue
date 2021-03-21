@@ -10,14 +10,12 @@
         {{ menu.name }}
       </router-link>
     </div>
-    <router-view v-slot="{ Component }">
-      <component class="flex-1 h-screen p-8" :is="Component" />
-    </router-view>
+    <router-view class="flex-1 h-screen p-8"/>
   </div>
 </template>
 
 <script>
-import { ROUTES } from '../../constants'
+import { ROUTES } from '@/constants'
 
 export default {
   name: 'Home',
