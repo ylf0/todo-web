@@ -11,6 +11,8 @@ import {
   ElIcon,
   ElInput,
   ElDatePicker,
+  ElEmpty,
+  ElMessage,
   locale
 } from 'element-plus'
 import lang from 'element-plus/lib/locale/lang/zh-cn'
@@ -26,6 +28,9 @@ import 'element-plus/lib/theme-chalk/el-dropdown-item.css'
 import 'element-plus/lib/theme-chalk/el-icon.css'
 import 'element-plus/lib/theme-chalk/el-input.css'
 import 'element-plus/lib/theme-chalk/el-date-picker.css'
+import 'element-plus/lib/theme-chalk/el-empty.css'
+import 'element-plus/lib/theme-chalk/el-message-box.css'
+import 'element-plus/lib/theme-chalk/el-message.css'
 
 import routes from './routes'
 import store from './store'
@@ -62,4 +67,6 @@ app
   .use(ElIcon)
   .use(ElInput)
   .use(ElDatePicker)
+  .use(ElEmpty)
+  .use(ElMessage)
   .mount('#app')

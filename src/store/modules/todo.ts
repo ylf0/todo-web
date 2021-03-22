@@ -1,4 +1,5 @@
 import { ITodo } from '@/types'
+import { ITodo } from '../../types'
 
 interface IStoreState {
   todos: ITodo[]
@@ -21,6 +22,11 @@ const mutations = {
     const targetIndex = state.todos.findIndex(({ id }) => id === todo.id)
     if (targetIndex !== -1) state.todos.splice(targetIndex, 1, todo)
   },
+
+  deleteTodo(state: IStoreState, todo: ITodo) {
+    const targetIndex = state.todos.findIndex(({ id }) => id === todo.id)
+    if (targetIndex !== -1) state.todos.splice(targetIndex, 1)
+  }
 }
 
 export default {

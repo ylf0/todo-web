@@ -22,6 +22,7 @@
           {{ todo.title }}
         </el-checkbox>
       </div>
+      <el-empty v-if="!todos.length" class="mt-32"/>
     </div>
     <el-drawer :with-header="false" v-model="showDrawer" @close="handleCloseDrawer">
       <todo-detail
@@ -29,6 +30,7 @@
         @desc-change="handleDescChange"
         @end-date-change="handleEndDateChange"
         @priority-change="handlePriorityChange"
+        @delete-todo="handleDeleteTodo"
       />
     </el-drawer>
   </div>
@@ -106,15 +108,23 @@ export default {
     },
 
     handleDescChange(value: string) {
-      this.$store.commit('updateTodo', { ...this.currTodo, desc: value })
+      this.currTodo = { ...this.currTodo, desc: value }
+      this.$store.commit('updateTodo', this.currTodo)
     },
 
     handleEndDateChange(value: any) {
-      this.$store.commit('updateTodo', { ...this.currTodo, endDate: value.toString() })
+      this.currTodo = { ...this.currTodo, endDate: value.toString() }
+      this.$store.commit('updateTodo', this.currTodo)
     },
 
     handlePriorityChange(index: number) {
-      this.$store.commit('updateTodo', { ...this.currTodo, priorityType: index })
+      this.currTodo = { ...this.currTodo, priorityType: index }
+      this.$store.commit('updateTodo', this.currTodo)
+    },
+
+    handleDeleteTodo() {
+      this.$store.commit('deleteTodo', this.currTodo)
+      this.showDrawer = false
     },
   }
 }

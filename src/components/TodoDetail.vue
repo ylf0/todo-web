@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen p-6 antialiased">
     <div class="flex justify-between items-center py-2 w-full">
-      <el-dropdown trigger="click">
+      <el-dropdown>
         <span>收集箱</span>
         <i class="el-icon-arrow-down ml-1"/>
         <template #dropdown>
@@ -14,7 +14,22 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <i class="el-icon-more"/>
+      <el-dropdown>
+        <el-button
+          class="bg-gray-300 border-gray-300"
+          icon="el-icon-more"
+          size="mini"
+          type="info"
+          circle
+        />
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>完成</el-dropdown-item>
+            <el-dropdown-item>移动至</el-dropdown-item>
+            <el-dropdown-item @click="openConfirmBox">删除</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
     <el-divider class="mt-2 mb-4"/>
     <p class="text-xl font-medium">{{ todo && todo.title }}</p>
@@ -27,7 +42,10 @@
       @change="value => $emit('desc-change', value)"
     />
     <el-divider class="mt-4 mb-2"/>
-    <p class="mb-2 text-sm text-gray-500">截止日期</p>
+    <div class="flex items-center mb-2 text-gray-500">
+      <i class="el-icon-date"/>
+      <p class="ml-2 text-sm">截止日期</p>
+    </div>
     <el-date-picker
       type="date"
       placeholder="设定截止日期"
@@ -35,7 +53,10 @@
       @change="value => $emit('end-date-change', value)"
     />
     <el-divider class="mt-4 mb-2"/>
-    <p class="mb-2 text-sm text-gray-500">优先级</p>
+    <div class="flex items-center mb-2 text-gray-500">
+      <i class="el-icon-stopwatch"/>
+      <p class="ml-2 text-sm">优先级</p>
+    </div>
     <el-dropdown trigger="click" @command="index => $emit('priority-change', index)">
       <span>{{ typeof todo.priorityType === 'number' ? priorityOptions[todo.priorityType].name : '设定优先级' }}</span>
       <template #dropdown>
@@ -51,17 +72,24 @@
       </template>
     </el-dropdown>
     <el-divider class="mt-4 mb-2"/>
-      <p class="mb-2 text-sm text-gray-500">添加子任务</p>
+      <div class="flex items-center mb-2 text-gray-500">
+        <i class="el-icon-files"/>
+        <p class="ml-2 text-sm">添加子任务</p>
+      </div>
       <el-input placeholder="添加子任务"/>
     <el-divider class="mt-4 mb-2"/>
     <div>
-      <p class="mb-2 text-sm text-gray-500">todo 动态</p>
+      <div class="flex items-center mb-2 text-gray-500">
+        <i class="el-icon-tickets"/>
+        <p class="ml-2 text-sm">todo 动态</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { ElMessageBox } from 'element-plus'
 
 import { PRIORITY_OPTIONS } from '@/constants'
 
@@ -76,6 +104,21 @@ export default defineComponent({
     return {
       // TODO: 常量怎么在 <template/> 里使用呢？
       priorityOptions: PRIORITY_OPTIONS
+    }
+  },
+
+  methods: {
+    openConfirmBox() {
+      ElMessageBox.confirm('确认删除？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$emit('delete-todo')
+        this.$message.success('已成功删除')
+      }).catch(() => {
+        this.$message('已取消')
+      })
     }
   }
 })
