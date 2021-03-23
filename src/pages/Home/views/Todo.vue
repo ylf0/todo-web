@@ -9,14 +9,19 @@
           @keydown="handleKeyDown"
         />
       </div>
-      <el-button class="ml-4">Date Filter</el-button>
+      <el-button class="ml-4 font-normal">日期筛选</el-button>
     </div>
-    <div class="mt-4">
+    <div class="mt-4" @drop="handleDrop">
       <div
-        class="flex items-center py-2 rounded cursor-pointer hover:bg-gray-100"
+        class="flex items-center mb-4 pl-2 py-2 todo-width border-l-4 rounded bg-white cursor-pointer shadow-sm hover:bg-gray-100"
+        :class="getTodoClass(todo)"
         v-for="(todo, index) in todos"
         :key="index"
+        :draggable="true"
+        :data-index="todo.id"
         @click="() => handleShowDrawer(todo)"
+        @dragstart="(e) => handleDragStart(e, todo.id)"
+        @dragover="(e) => handleDragOver(e, todo.id)"
       >
         <el-checkbox class="ml-2" v-model="todo.done" @change="handleCheckboxChange(todo)">
           {{ todo.title }}
@@ -39,6 +44,8 @@
 <script lang="ts">
 import { ITodo } from '@/types'
 import TodoDetail from '@/components/TodoDetail.vue'
+
+let dragTargetId = ''
 
 interface IState {
   showDrawer: boolean
@@ -77,10 +84,19 @@ export default {
   computed: {
     todos() {
       return this.$store.state.todo.todos
-    }
+    },
   },
 
   methods: {
+    getTodoClass(todo: ITodo) {
+      const { priorityType } = todo
+      return {
+        'border-blue-400': priorityType === 1,
+        'border-yellow-400': priorityType === 2,
+        'border-red-400': priorityType === 3
+      }
+    },
+
     addTodo(todo: ITodo) {
       const { getters, commit } = this.$store
       commit('addTodo', { id: getters.nextId, ...todo })
@@ -126,6 +142,26 @@ export default {
       this.$store.commit('deleteTodo', this.currTodo)
       this.showDrawer = false
     },
+
+    handleDragStart(e: any, todoId: string) {
+      e.dataTransfer.dropEffect = 'move'
+      e.dataTransfer.setData('text/plain', todoId)
+    },
+
+    handleDragOver(e: any, todoId: string) {
+      dragTargetId = todoId
+      e.preventDefault()
+      e.dataTransfer.dropEffect = 'move'
+    },
+
+    handleDrop(e: any) {
+      e.preventDefault()
+      const sourceId = e.dataTransfer.getData('text/plain')
+
+      this.$store.commit('dragTodo', { sourceId, targetId: dragTargetId })
+
+      dragTargetId = ''
+    },
   }
 }
 </script>
@@ -133,5 +169,9 @@ export default {
 <style>
 .el-overlay {
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+.todo-width {
+  width: calc(100% - 114px)
 }
 </style>

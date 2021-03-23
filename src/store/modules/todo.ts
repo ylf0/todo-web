@@ -26,6 +26,21 @@ const mutations = {
   deleteTodo(state: IStoreState, todo: ITodo) {
     const targetIndex = state.todos.findIndex(({ id }) => id === todo.id)
     if (targetIndex !== -1) state.todos.splice(targetIndex, 1)
+  },
+
+  dragTodo(state: IStoreState, info: any) {
+    const { sourceId, targetId } = info
+    const { todos } = state
+
+    const sourceIndex = state.todos.findIndex(({ id }) => id === sourceId)
+    const targetIndex = state.todos.findIndex(({ id }) => id === targetId)
+
+    if (sourceIndex !== -1 && targetIndex !== -1) {
+      const source = Object.assign({}, todos[sourceIndex])
+      const target = Object.assign({}, todos[targetIndex])
+      todos.splice(targetIndex, 1, source)
+      todos.splice(sourceIndex, 1, target)
+    }
   }
 }
 

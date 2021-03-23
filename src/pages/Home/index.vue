@@ -4,10 +4,11 @@
       <router-link
         class="inline-block my-2 px-8 w-full"
         v-for="(menu, index) in menus"
+        v-slot="{ isActive }"
         :key="index"
         :to="menu.path"
       >
-        {{ menu.name }}
+        <span :class="{ 'text-blue-500 font-medium': isActive }">{{ menu.name }}</span>
       </router-link>
     </div>
     <router-view class="flex-1 h-screen p-8"/>

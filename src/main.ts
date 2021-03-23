@@ -13,6 +13,7 @@ import {
   ElDatePicker,
   ElEmpty,
   ElMessage,
+  ElTag,
   locale
 } from 'element-plus'
 import lang from 'element-plus/lib/locale/lang/zh-cn'
@@ -31,6 +32,7 @@ import 'element-plus/lib/theme-chalk/el-date-picker.css'
 import 'element-plus/lib/theme-chalk/el-empty.css'
 import 'element-plus/lib/theme-chalk/el-message-box.css'
 import 'element-plus/lib/theme-chalk/el-message.css'
+import 'element-plus/lib/theme-chalk/el-tag.css'
 
 import routes from './routes'
 import store from './store'
@@ -69,4 +71,5 @@ app
   .use(ElDatePicker)
   .use(ElEmpty)
   .use(ElMessage)
+  .use(ElTag)
   .mount('#app')

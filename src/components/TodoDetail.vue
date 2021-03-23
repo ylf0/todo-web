@@ -32,7 +32,7 @@
       </el-dropdown>
     </div>
     <el-divider class="mt-2 mb-4"/>
-    <p class="text-xl font-medium">{{ todo && todo.title }}</p>
+    <el-input class="title-input" v-model="todo.title" />
     <el-input
       class="mt-1"
       type="textarea"
@@ -42,7 +42,7 @@
       @change="value => $emit('desc-change', value)"
     />
     <el-divider class="mt-4 mb-2"/>
-    <div class="flex items-center mb-2 text-gray-500">
+    <div class="flex items-center mt-3 mb-2 text-gray-500">
       <i class="el-icon-date"/>
       <p class="ml-2 text-sm">截止日期</p>
     </div>
@@ -53,33 +53,37 @@
       @change="value => $emit('end-date-change', value)"
     />
     <el-divider class="mt-4 mb-2"/>
-    <div class="flex items-center mb-2 text-gray-500">
+    <div class="flex items-center mt-3 mb-2 text-gray-500">
       <i class="el-icon-stopwatch"/>
       <p class="ml-2 text-sm">优先级</p>
     </div>
     <el-dropdown trigger="click" @command="index => $emit('priority-change', index)">
-      <span>{{ typeof todo.priorityType === 'number' ? priorityOptions[todo.priorityType].name : '设定优先级' }}</span>
+      <div>
+        <span v-if="!priority">设定优先级</span>
+        <el-tag v-else :type="priority.type">{{ priority.name }}</el-tag>
+      </div>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item
             v-for="option in priorityOptions"
+            class="my-2"
             :key="option.key"
             :command="option.key"
           >
-            {{ option.name }}
+            <el-tag :type="option.type">{{ option.name }}</el-tag>
           </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
     <el-divider class="mt-4 mb-2"/>
-      <div class="flex items-center mb-2 text-gray-500">
+      <div class="flex items-center mt-3 mb-2 text-gray-500">
         <i class="el-icon-files"/>
         <p class="ml-2 text-sm">添加子任务</p>
       </div>
       <el-input placeholder="添加子任务"/>
     <el-divider class="mt-4 mb-2"/>
     <div>
-      <div class="flex items-center mb-2 text-gray-500">
+      <div class="flex items-center mt-3 mb-2 text-gray-500">
         <i class="el-icon-tickets"/>
         <p class="ml-2 text-sm">todo 动态</p>
       </div>
@@ -107,6 +111,18 @@ export default defineComponent({
     }
   },
 
+  computed: {
+    priority: function(context: any) {
+      const { priorityType } = context.todo
+
+      if (typeof priorityType === 'number') {
+        return PRIORITY_OPTIONS[priorityType]
+      }
+
+      return
+    }
+  },
+
   methods: {
     openConfirmBox() {
       ElMessageBox.confirm('确认删除？', '提示', {
@@ -125,9 +141,22 @@ export default defineComponent({
 </script>
 
 <style>
-.el-textarea__inner {
+.el-input__inner, .el-textarea__inner {
   padding: 5px 0;
   border: none;
   resize: none;
+}
+
+.el-input__prefix {
+  display: none;
+}
+
+.el-input--prefix .el-input__inner {
+  padding-left: 0;
+}
+
+.title-input input {
+  font-size: 1.6rem;
+  font-weight: 500;
 }
 </style>

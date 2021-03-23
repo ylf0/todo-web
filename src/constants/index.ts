@@ -6,8 +6,8 @@ export const ROUTES = {
 }
 
 export const PRIORITY_OPTIONS = [
-  { key: 0, name: '较低' },
+  { key: 0, name: '较低', type: 'info' },
   { key: 1, name: '普通' },
-  { key: 2, name: '紧急' },
-  { key: 3, name: '非常紧急' },
+  { key: 2, name: '紧急', type: 'warning' },
+  { key: 3, name: '非常紧急', type: 'danger' },
 ]
