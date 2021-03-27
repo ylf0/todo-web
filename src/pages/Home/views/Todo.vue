@@ -1,6 +1,6 @@
 <template>
   <div class="flex-1 h-screen p-8 pt-24 overflow-y-scroll">
-    <div class="flex fixed top-0 right-0 p-8 pb-4 w-5/6 bg-white z-10">
+    <div class="flex fixed top-0 right-0 p-8 pb-4 w-5/6 bg-white opacity-95 z-10">
       <div class="flex-1 px-4 py-2 border border-gray-300 border-solid rounded bg-gray-100">
         <input
           class="w-full bg-transparent outline-none tracking-wider"
@@ -42,6 +42,13 @@
             <span :class="{'text-gray-300 line-through': todo.done}">{{ todo.title }}</span>
           </el-checkbox>
         </div>
+        <span
+          v-if="todo.endDate"
+          class="ml-4 tracking-wide"
+          :class="{ 'text-gray-400': !todo.done, 'text-gray-300': todo.done }"
+        >
+          {{ todo.endDate }}
+        </span>
       </div>
       <el-empty v-if="!todos.length" class="mt-32"/>
     </div>

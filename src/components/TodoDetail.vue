@@ -50,7 +50,7 @@
       type="date"
       placeholder="设定截止日期"
       v-model="todo.endDate"
-      @change="value => $emit('end-date-change', value)"
+      @change="value => $emit('end-date-change', value.toLocaleDateString())"
     />
     <el-divider class="mt-4 mb-2"/>
     <div class="flex items-center mt-3 mb-2 text-gray-500">
