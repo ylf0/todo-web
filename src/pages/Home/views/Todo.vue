@@ -1,6 +1,6 @@
 <template>
-  <div class="flex-1 h-screen p-8">
-    <div class="flex">
+  <div class="flex-1 h-screen p-8 pt-24 overflow-y-scroll">
+    <div class="flex fixed top-0 right-0 p-8 pb-4 w-5/6 bg-white z-10">
       <div class="flex-1 px-4 py-2 border border-gray-300 border-solid rounded bg-gray-100">
         <input
           class="w-full bg-transparent outline-none tracking-wider"
@@ -9,13 +9,27 @@
           @keydown="handleKeyDown"
         />
       </div>
-      <el-button class="ml-4 font-normal">日期筛选</el-button>
+      <el-dropdown @command="handleSelectStatus">
+        <el-button class="ml-4 font-normal">筛选列表</el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              :class="{ 'text-blue-500': status.key === currStatus }"
+              v-for="status in statusOptions"
+              :key="status.key"
+              :command="status.key"
+            >
+              {{ status.name }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
-    <div class="mt-4" @drop="handleDrop">
+    <div @drop="handleDrop">
       <div
         class="flex items-center mb-4 pl-2 py-2 todo-width border-l-4 rounded bg-white cursor-pointer shadow-sm hover:bg-gray-100"
         :class="getTodoClass(todo)"
-        v-for="(todo, index) in todos"
+        v-for="(todo, index) in filterTodos"
         :key="index"
         :draggable="true"
         :data-index="todo.id"
@@ -23,9 +37,11 @@
         @dragstart="(e) => handleDragStart(e, todo.id)"
         @dragover="(e) => handleDragOver(e, todo.id)"
       >
-        <el-checkbox class="ml-2" v-model="todo.done" @change="handleCheckboxChange(todo)">
-          {{ todo.title }}
-        </el-checkbox>
+        <div @click="e => e.stopPropagation()">
+          <el-checkbox class="ml-2" v-model="todo.done">
+            <span :class="{'text-gray-300 line-through': todo.done}">{{ todo.title }}</span>
+          </el-checkbox>
+        </div>
       </div>
       <el-empty v-if="!todos.length" class="mt-32"/>
     </div>
@@ -42,13 +58,16 @@
 </template>
 
 <script lang="ts">
-import { ITodo } from '@/types'
+import { IStatus, ITodo } from '@/types'
+import { STATUS_OPTIONS } from '@/constants'
 import TodoDetail from '@/components/TodoDetail.vue'
 
 let dragTargetId = ''
 
 interface IState {
   showDrawer: boolean
+  statusOptions: IStatus[]
+  currStatus: string
   currTodo?: ITodo
 }
 
@@ -69,6 +88,8 @@ export default {
   data(): IState {
     return {
       showDrawer: false,
+      statusOptions: STATUS_OPTIONS,
+      currStatus: 'undone',
       currTodo: emptyTodo
     }
   },
@@ -84,6 +105,20 @@ export default {
   computed: {
     todos() {
       return this.$store.state.todo.todos
+    },
+
+    filterTodos() {
+      const { getters } = this.$store
+      if (getters[this.currStatus]) return getters[this.currStatus]
+      return getters.undone
+    },
+
+    doneTodos() {
+      return this.$store.getters.doneTodos
+    },
+
+    unDoneTodos() {
+      return this.$store.getters.unDoneTodos
     },
   },
 
@@ -109,8 +144,8 @@ export default {
       }
     },
 
-    // TODO: 黑人问号？？？为啥可以自动更新 todo.done？？
-    handleCheckboxChange(todo: ITodo) {
+    handleSelectStatus(key: string) {
+      this.currStatus = key
     },
 
     handleShowDrawer(todo: ITodo) {

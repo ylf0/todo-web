@@ -1,3 +1,8 @@
+export interface IStatus {
+  key: string
+  name: string
+}
+
 export interface ITodo {
   id: string
   title: string

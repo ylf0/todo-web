@@ -65,8 +65,8 @@
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item
-            v-for="option in priorityOptions"
             class="my-2"
+            v-for="option in priorityOptions"
             :key="option.key"
             :command="option.key"
           >
@@ -118,8 +118,6 @@ export default defineComponent({
       if (typeof priorityType === 'number') {
         return PRIORITY_OPTIONS[priorityType]
       }
-
-      return
     }
   },
 

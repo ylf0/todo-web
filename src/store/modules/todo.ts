@@ -1,16 +1,37 @@
 import { ITodo } from '@/types'
-import { ITodo } from '../../types'
 
 interface IStoreState {
   todos: ITodo[]
 }
 
+function mockData() {
+  const mockList = []
+
+  for (let i = 0; i < 50; i ++) {
+    mockList.push({
+      id: `todo-${i + 1}`,
+      title: `todo-${i + 1}`,
+      done: i % 4 === 0,
+      priorityType: i % 4
+    })
+  }
+
+  return mockList
+}
+
 const state = {
-  todos: []
+  todos: mockData()
 }
 
 const getters = {
-  nextId: (state: IStoreState) => `todo-${state.todos.length + 1}`
+  nextId: (state: IStoreState) => `todo-${state.todos.length + 1}`,
+  done: (state: IStoreState) => state.todos.filter(todo => todo.done),
+  undone: (state: IStoreState) => state.todos.filter(todo => !todo.done),
+  priority: (state: IStoreState) => {
+    return state.todos
+            .filter(todo => !todo.done)
+            .sort((a, b) => b.priorityType - a.priorityType)
+  }
 }
 
 const mutations = {
