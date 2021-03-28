@@ -32,60 +32,62 @@
       </el-dropdown>
     </div>
     <el-divider class="mt-2 mb-4"/>
-    <el-input class="title-input" v-model="todo.title" />
-    <el-input
-      class="mt-1"
-      type="textarea"
-      :autosize="{ minRows: 1, maxRows: 4 }"
-      placeholder="添加描述"
-      v-model="todo.desc"
-      @change="value => $emit('desc-change', value)"
-    />
-    <el-divider class="mt-4 mb-2"/>
-    <div class="flex items-center mt-3 mb-2 text-gray-500">
-      <i class="el-icon-date"/>
-      <p class="ml-2 text-sm">截止日期</p>
-    </div>
-    <el-date-picker
-      type="date"
-      placeholder="设定截止日期"
-      v-model="todo.endDate"
-      @change="value => $emit('end-date-change', value.toLocaleDateString())"
-    />
-    <el-divider class="mt-4 mb-2"/>
-    <div class="flex items-center mt-3 mb-2 text-gray-500">
-      <i class="el-icon-stopwatch"/>
-      <p class="ml-2 text-sm">优先级</p>
-    </div>
-    <el-dropdown trigger="click" @command="index => $emit('priority-change', index)">
+    <div class="detail-height overflow-y-scroll">
+      <el-input class="title-input" v-model="todo.title" />
+      <el-input
+        class="mt-1"
+        type="textarea"
+        :autosize="{ minRows: 1, maxRows: 4 }"
+        placeholder="添加描述"
+        v-model="todo.desc"
+        @change="value => $emit('desc-change', value)"
+      />
+      <el-divider class="mt-4 mb-2"/>
+      <div class="flex items-center mt-3 mb-2 text-gray-500">
+        <i class="el-icon-date"/>
+        <p class="ml-2 text-sm">截止日期</p>
+      </div>
+      <el-date-picker
+        type="date"
+        placeholder="设定截止日期"
+        v-model="todo.endDate"
+        @change="value => $emit('end-date-change', value.toLocaleDateString())"
+      />
+      <el-divider class="mt-4 mb-2"/>
+      <div class="flex items-center mt-3 mb-2 text-gray-500">
+        <i class="el-icon-stopwatch"/>
+        <p class="ml-2 text-sm">优先级</p>
+      </div>
+      <el-dropdown trigger="click" @command="index => $emit('priority-change', index)">
+        <div>
+          <span v-if="!priority">设定优先级</span>
+          <el-tag v-else :type="priority.type">{{ priority.name }}</el-tag>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              class="my-2"
+              v-for="option in priorityOptions"
+              :key="option.key"
+              :command="option.key"
+            >
+              <el-tag :type="option.type">{{ option.name }}</el-tag>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+      <el-divider class="mt-4 mb-2"/>
+        <div class="flex items-center mt-3 mb-2 text-gray-500">
+          <i class="el-icon-files"/>
+          <p class="ml-2 text-sm">添加子任务</p>
+        </div>
+        <el-input placeholder="添加子任务"/>
+      <el-divider class="mt-4 mb-2"/>
       <div>
-        <span v-if="!priority">设定优先级</span>
-        <el-tag v-else :type="priority.type">{{ priority.name }}</el-tag>
-      </div>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item
-            class="my-2"
-            v-for="option in priorityOptions"
-            :key="option.key"
-            :command="option.key"
-          >
-            <el-tag :type="option.type">{{ option.name }}</el-tag>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
-    <el-divider class="mt-4 mb-2"/>
-      <div class="flex items-center mt-3 mb-2 text-gray-500">
-        <i class="el-icon-files"/>
-        <p class="ml-2 text-sm">添加子任务</p>
-      </div>
-      <el-input placeholder="添加子任务"/>
-    <el-divider class="mt-4 mb-2"/>
-    <div>
-      <div class="flex items-center mt-3 mb-2 text-gray-500">
-        <i class="el-icon-tickets"/>
-        <p class="ml-2 text-sm">todo 动态</p>
+        <div class="flex items-center mt-3 mb-2 text-gray-500">
+          <i class="el-icon-tickets"/>
+          <p class="ml-2 text-sm">todo 动态</p>
+        </div>
       </div>
     </div>
   </div>
@@ -156,5 +158,9 @@ export default defineComponent({
 .title-input input {
   font-size: 1.6rem;
   font-weight: 500;
+}
+
+.detail-height {
+  height: calc(100vh - 4rem - 28px);
 }
 </style>

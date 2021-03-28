@@ -27,6 +27,11 @@ const getters = {
   nextId: (state: IStoreState) => `todo-${state.todos.length + 1}`,
   done: (state: IStoreState) => state.todos.filter(todo => todo.done),
   undone: (state: IStoreState) => state.todos.filter(todo => !todo.done),
+  endDate: (state: IStoreState) => {
+    return state.todos
+            .filter(todo => !todo.done)
+            .sort((a, b) => (Date.parse(b.endDate) || 0) - (Date.parse(a.priorityType) || 0))
+  },
   priority: (state: IStoreState) => {
     return state.todos
             .filter(todo => !todo.done)
