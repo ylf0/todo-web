@@ -18,11 +18,11 @@
         </template>
       </el-dropdown>
     </div>
-    <div @drop="handleDrop">
+    <div @drop="handleDrop" v-infinite-scroll="handleScrollLoad">
       <div
         class="flex items-center mb-4 pl-2 py-2 todo-width border-l-4 rounded bg-white cursor-pointer shadow-sm hover:bg-gray-100"
         :class="getTodoClass(todo)"
-        v-for="(todo, index) in filterTodos"
+        v-for="(todo, index) in todos"
         :key="index"
         :draggable="true"
         :data-index="todo.id"
@@ -43,7 +43,7 @@
           {{ todo.endDate }}
         </span>
       </div>
-      <el-empty v-if="!todos.length" class="mt-32"/>
+      <el-empty v-if="!todos.length" class="empty-content-height"/>
     </div>
     <el-drawer :with-header="false" v-model="showDrawer" @close="handleCloseDrawer">
       <todo-detail
@@ -51,6 +51,7 @@
         @desc-change="handleDescChange"
         @end-date-change="handleEndDateChange"
         @priority-change="handlePriorityChange"
+        @toggle-status="handleToggleStatus"
         @delete-todo="handleDeleteTodo"
       />
     </el-drawer>
@@ -71,6 +72,9 @@ interface IState {
   statusOptions: IStatus[]
   currStatus: string
   currTodo?: ITodo
+  todos: ITodo[]
+  pageNum: number
+  pageSize: number
 }
 
 const emptyTodo: ITodo = {
@@ -93,27 +97,22 @@ export default {
       showDrawer: false,
       statusOptions: STATUS_OPTIONS,
       currStatus: 'undone',
-      currTodo: emptyTodo
+      currTodo: emptyTodo,
+      todos: [],
+      pageNum: 1,
+      pageSize: 20
     }
   },
 
+  created() {
+    this.todos = this.getTodosByPage(1, this.pageSize)
+  },
+
   computed: {
-    todos() {
-      return this.$store.state.todo.todos
-    },
 
-    filterTodos() {
+    totalSize() {
       const { getters } = this.$store
-      if (getters[this.currStatus]) return getters[this.currStatus]
-      return getters.undone
-    },
-
-    doneTodos() {
-      return this.$store.getters.doneTodos
-    },
-
-    unDoneTodos() {
-      return this.$store.getters.unDoneTodos
+      return getters.getTotalSize(this.currStatus)
     },
   },
 
@@ -127,6 +126,13 @@ export default {
       }
     },
 
+    getTodosByPage(pageNum: number, pageSize: number) {
+      if (pageNum < 1 || pageSize < 0) return []
+
+      const { getters } = this.$store
+      return getters.getTodoByPage(pageNum, pageSize, this.currStatus)
+    },
+
     addTodo(todo: ITodo) {
       const { getters, commit } = this.$store
       commit('addTodo', { id: getters.nextId, ...todo })
@@ -137,7 +143,9 @@ export default {
     },
 
     handleSelectStatus(key: string) {
+      this.pageNum = 1
       this.currStatus = key
+      this.todos = this.getTodosByPage(1, this.pageSize)
     },
 
     handleShowDrawer(todo: ITodo) {
@@ -189,6 +197,19 @@ export default {
 
       dragTargetId = ''
     },
+
+    handleToggleStatus() {
+      this.currTodo = { ...this.currTodo, done: !this.currTodo.done }
+      this.$store.commit('updateTodo', this.currTodo)
+    },
+
+    handleScrollLoad() {
+      if (this.pageNum >= Math.ceil(this.totalSize / this.pageSize)) return
+      this.pageNum += 1
+
+      const lists = this.getTodosByPage(this.pageNum, this.pageSize)
+      this.todos = [...this.todos, ...lists]
+    },
   }
 }
 </script>
@@ -200,5 +221,10 @@ export default {
 
 .todo-width {
   width: calc(100% - 114px)
+}
+
+.empty-content-height {
+  height: calc(100vh - 8rem);
+  min-height: 260px;
 }
 </style>

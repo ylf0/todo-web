@@ -17,7 +17,8 @@ export default {
 
   methods: {
     handleInputChange(val: string) {
-      console.info('search value: ', val)
+      const { getters } = this.$store
+      console.info('getters.getSearchTodo(val): ', getters.getSearchTodo(val))
     }
   }
 }

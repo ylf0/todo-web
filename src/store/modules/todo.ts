@@ -36,6 +36,24 @@ const getters = {
     return state.todos
             .filter(todo => !todo.done)
             .sort((a, b) => b.priorityType - a.priorityType)
+  },
+  getTodoByPage: (state: IStoreState, getters: any) => {
+    return (pageNum: number, pageSize: number, type: string) => {
+      if (Array.isArray(getters[type])) return getters[type].slice((pageNum - 1) * pageSize, pageNum * pageSize)
+      return []
+    }
+  },
+  getTotalSize: (state: IStoreState, getters: any) => {
+    return (type: string) => {
+      if (Array.isArray(getters[type])) return getters[type].length
+      return 0
+    }
+  },
+
+  getSearchTodo: (state: IStoreState) => {
+    return (searchWord: string) => {
+      return state.todos.filter(todo => todo.title.includes(searchWord))
+    }
   }
 }
 

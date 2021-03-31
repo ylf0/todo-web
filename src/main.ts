@@ -14,6 +14,7 @@ import {
   ElEmpty,
   ElMessage,
   ElTag,
+  ElInfiniteScroll,
   locale
 } from 'element-plus'
 import lang from 'element-plus/lib/locale/lang/zh-cn'
@@ -72,4 +73,5 @@ app
   .use(ElEmpty)
   .use(ElMessage)
   .use(ElTag)
+  .use(ElInfiniteScroll)
   .mount('#app')

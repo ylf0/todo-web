@@ -24,7 +24,9 @@
         />
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>完成</el-dropdown-item>
+            <el-dropdown-item @click="toggleStatus">
+              {{todo.done ? '取消完成' : '完成'}}
+            </el-dropdown-item>
             <el-dropdown-item>移动至</el-dropdown-item>
             <el-dropdown-item @click="openConfirmBox">删除</el-dropdown-item>
           </el-dropdown-menu>
@@ -124,6 +126,10 @@ export default defineComponent({
   },
 
   methods: {
+    toggleStatus() {
+      this.$emit('toggle-status')
+    },
+
     openConfirmBox() {
       ElMessageBox.confirm('确认删除？', '提示', {
         confirmButtonText: '确定',
