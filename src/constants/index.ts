@@ -2,7 +2,8 @@ export const ROUTES = {
   root: '/',
   todo: '/todo',
   search: '/search',
-  tag: '/tag'
+  tag: '/tag',
+  note: '/note'
 }
 
 export const STATUS_OPTIONS = [

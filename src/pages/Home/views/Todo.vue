@@ -1,14 +1,7 @@
 <template>
   <div class="flex-1 h-screen p-8 pt-24 overflow-y-scroll">
     <div class="flex fixed top-0 right-0 p-8 pb-4 w-5/6 bg-white opacity-95 z-10">
-      <div class="flex-1 px-4 py-2 border border-gray-300 border-solid rounded bg-gray-100">
-        <input
-          class="w-full bg-transparent outline-none tracking-wider"
-          placeholder="回车创建 todo"
-          v-model="inputValue"
-          @keydown="handleKeyDown"
-        />
-      </div>
+      <Input @input-change="handleInputChange"/>
       <el-dropdown @command="handleSelectStatus">
         <el-button class="ml-4 font-normal">筛选列表</el-button>
         <template #dropdown>
@@ -67,6 +60,8 @@
 <script lang="ts">
 import { IStatus, ITodo } from '@/types'
 import { STATUS_OPTIONS } from '@/constants'
+
+import Input from '@/components/Input.vue'
 import TodoDetail from '@/components/TodoDetail.vue'
 
 let dragTargetId = ''
@@ -89,8 +84,9 @@ const emptyTodo: ITodo = {
 }
 
 export default {
-  components: { TodoDetail },
   name: 'Todo',
+
+  components: { Input, TodoDetail },
 
   data(): IState {
     return {
@@ -98,14 +94,6 @@ export default {
       statusOptions: STATUS_OPTIONS,
       currStatus: 'undone',
       currTodo: emptyTodo
-    }
-  },
-
-  // TODO: 为啥 showDrawer 放在 setup() 里只能响应变化一次？
-  // TODO: setup() 具体是啥机制呢？
-  setup() {
-    return {
-      inputValue: ''
     }
   },
 
@@ -144,11 +132,8 @@ export default {
       commit('addTodo', { id: getters.nextId, ...todo })
     },
 
-    handleKeyDown(e: any) {
-      if (e.keyCode === 13) {
-        this.addTodo({ title: this.inputValue, done: false })
-        this.inputValue = ''
-      }
+    handleInputChange(title: string) {
+      this.addTodo({ title, done: false })
     },
 
     handleSelectStatus(key: string) {

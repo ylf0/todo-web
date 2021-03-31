@@ -27,7 +27,8 @@ export default {
       menus: [
         { name: 'Todo', path: ROUTES.todo, icon: 'el-icon-news' },
         { name: '搜索', path: ROUTES.search, icon: 'el-icon-search' },
-        { name: '收集箱', path: ROUTES.tag, icon: 'el-icon-receiving' }
+        { name: '收集箱', path: ROUTES.tag, icon: 'el-icon-receiving' },
+        { name: '便签', path: ROUTES.note, icon: 'el-icon-notebook-2' },
       ],
     }
   },
