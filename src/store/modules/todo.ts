@@ -52,7 +52,7 @@ const getters = {
 
   getSearchTodo: (state: IStoreState) => {
     return (searchWord: string) => {
-      return state.todos.filter(todo => todo.title.includes(searchWord))
+      return state.todos.filter(todo => RegExp(searchWord, 'gi').test(todo.title))
     }
   }
 }

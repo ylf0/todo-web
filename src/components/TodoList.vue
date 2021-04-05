@@ -5,8 +5,13 @@
     @click="handleShowDrawer"
   >
     <div @click="e => e.stopPropagation()">
-      <el-checkbox class="ml-2" v-model="todo.done">
-        <span :class="{'text-gray-300 line-through': todo.done}">{{ todo.title }}</span>
+      <el-checkbox
+        class="ml-2"
+        v-model="todo.done"
+        @change="() => $emit('checkbox-change')"
+      >
+        <span v-if="!searchWord" :class="{'text-gray-300 line-through': todo.done}">{{ todo.title }}</span>
+        <span v-else v-html="replaceTag()"/>
       </el-checkbox>
     </div>
     <span
@@ -27,7 +32,11 @@ export default defineComponent({
   name: 'TodoList',
 
   props: {
-    todo: Object
+    todo: Object,
+    searchWord: {
+      type: String,
+      required: false
+    }
   },
 
   methods: {
@@ -38,6 +47,14 @@ export default defineComponent({
         'border-yellow-400': priorityType === 2,
         'border-red-400': priorityType === 3
       }
+    },
+
+    replaceTag() {
+      if (!this.todo || !this.searchWord) return ''
+
+      return this.todo.title.replaceAll(
+        RegExp(this.searchWord, 'gi'),
+        (val: string) => `<span class="bg-yellow-300">${val}</span>`)
     },
 
     handleShowDrawer() {

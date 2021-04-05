@@ -6,6 +6,7 @@
       <TodoList
         v-for="todo in lists"
         :key="todo.id"
+        :searchWord="searchWord"
         :todo="todo"
         @select-todo="handleShowTodoDetail"
       />
