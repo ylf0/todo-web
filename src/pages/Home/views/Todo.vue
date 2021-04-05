@@ -20,12 +20,13 @@
     </div>
     <div @drop="handleDrop" v-infinite-scroll="handleScrollLoad">
       <TodoList
-        v-for="(todo, index) in todos"
-        :key="index"
+        v-for="todo in todos"
+        :key="todo.id"
         :draggable="true"
         :data-index="todo.id"
         :todo="todo"
         @select-todo="handleShowDrawer"
+        @checkbox-change="handleCheckboxChange"
         @dragstart="(e) => handleDragStart(e, todo.id)"
         @dragover="(e) => handleDragOver(e, todo.id)"
       />
@@ -117,7 +118,7 @@ export default {
       }
     },
 
-    getTodosByPage(pageNum: number, pageSize: number) {
+    getTodosByPage(pageNum: number, pageSize: number): ITodo[] {
       if (pageNum < 1 || pageSize < 0) return []
 
       const { getters } = this.$store
@@ -127,6 +128,10 @@ export default {
     addTodo(todo: ITodo) {
       const { getters, commit } = this.$store
       commit('addTodo', { id: getters.nextId, ...todo })
+    },
+
+    handleCheckboxChange() {
+      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
     },
 
     handleInputChange(title: string) {
@@ -157,11 +162,13 @@ export default {
     handleEndDateChange(value: any) {
       this.currTodo = { ...this.currTodo, endDate: value.toString() }
       this.$store.commit('updateTodo', this.currTodo)
+      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
     },
 
     handlePriorityChange(index: number) {
       this.currTodo = { ...this.currTodo, priorityType: index }
       this.$store.commit('updateTodo', this.currTodo)
+      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
     },
 
     handleDeleteTodo() {
@@ -185,6 +192,7 @@ export default {
       const sourceId = e.dataTransfer.getData('text/plain')
 
       this.$store.commit('dragTodo', { sourceId, targetId: dragTargetId })
+      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
 
       dragTargetId = ''
     },
@@ -192,6 +200,7 @@ export default {
     handleToggleStatus() {
       this.currTodo = { ...this.currTodo, done: !this.currTodo.done }
       this.$store.commit('updateTodo', this.currTodo)
+      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
     },
 
     handleScrollLoad() {

@@ -42,7 +42,6 @@
         :autosize="{ minRows: 1, maxRows: 4 }"
         placeholder="添加描述"
         v-model="todo.desc"
-        @change="value => $emit('desc-change', value)"
       />
       <el-divider class="mt-4 mb-2"/>
       <div class="flex items-center mt-3 mb-2 text-gray-500">
