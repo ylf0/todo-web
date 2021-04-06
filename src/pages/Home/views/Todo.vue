@@ -26,7 +26,6 @@
         :data-index="todo.id"
         :todo="todo"
         @select-todo="handleShowDrawer"
-        @checkbox-change="handleCheckboxChange"
         @dragstart="(e) => handleDragStart(e, todo.id)"
         @dragover="(e) => handleDragOver(e, todo.id)"
       />
@@ -92,7 +91,7 @@ export default {
       currTodo: emptyTodo,
       todos: [],
       pageNum: 1,
-      pageSize: 20
+      pageSize: 30
     }
   },
 
@@ -130,12 +129,9 @@ export default {
       commit('addTodo', { id: getters.nextId, ...todo })
     },
 
-    handleCheckboxChange() {
-      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
-    },
-
     handleInputChange(title: string) {
       this.addTodo({ title, done: false })
+      if (this.currStatus !== 'done') this.todos.push({ title, done: false })
     },
 
     handleSelectStatus(key: string) {
@@ -162,13 +158,13 @@ export default {
     handleEndDateChange(value: any) {
       this.currTodo = { ...this.currTodo, endDate: value.toString() }
       this.$store.commit('updateTodo', this.currTodo)
-      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
+      this.updateField('endDate')
     },
 
     handlePriorityChange(index: number) {
       this.currTodo = { ...this.currTodo, priorityType: index }
       this.$store.commit('updateTodo', this.currTodo)
-      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
+      this.updateField('priorityType')
     },
 
     handleDeleteTodo() {
@@ -192,7 +188,7 @@ export default {
       const sourceId = e.dataTransfer.getData('text/plain')
 
       this.$store.commit('dragTodo', { sourceId, targetId: dragTargetId })
-      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
+      this.swapTodoPosition(sourceId, dragTargetId)
 
       dragTargetId = ''
     },
@@ -200,7 +196,7 @@ export default {
     handleToggleStatus() {
       this.currTodo = { ...this.currTodo, done: !this.currTodo.done }
       this.$store.commit('updateTodo', this.currTodo)
-      this.todos = this.getTodosByPage(this.pageNum, this.pageSize)
+      this.updateField('done')
     },
 
     handleScrollLoad() {
@@ -209,6 +205,24 @@ export default {
 
       const lists = this.getTodosByPage(this.pageNum, this.pageSize)
       this.todos = [...this.todos, ...lists]
+    },
+
+    updateField(fieldName: string) {
+      const target = this.todos.find(todo => todo.id === this.currTodo.id)
+      if (target) target[fieldName] = this.currTodo[fieldName]
+    },
+
+    swapTodoPosition(sourceId: string, targetId: string) {
+      const { todos } = this
+      const sourceIndex = todos.findIndex(({ id }) => id === sourceId)
+      const targetIndex = todos.findIndex(({ id }) => id === targetId)
+
+      if (sourceIndex !== -1 && targetIndex !== -1) {
+        const source = Object.assign({}, todos[sourceIndex])
+        const target = Object.assign({}, todos[targetIndex])
+        todos.splice(targetIndex, 1, source)
+        todos.splice(sourceIndex, 1, target)
+      }
     },
   }
 }

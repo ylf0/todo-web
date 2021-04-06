@@ -8,10 +8,9 @@
       <el-checkbox
         class="ml-2"
         v-model="todo.done"
-        @change="() => $emit('checkbox-change')"
       >
         <span v-if="!searchWord" :class="{'text-gray-300 line-through': todo.done}">{{ todo.title }}</span>
-        <span v-else v-html="replaceTag()"/>
+        <span v-else :class="{'text-gray-400 line-through': todo.done}" v-html="replaceTag()"/>
       </el-checkbox>
     </div>
     <span
