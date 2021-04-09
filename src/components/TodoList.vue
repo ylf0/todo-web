@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center mb-4 pl-2 py-2 todo-width border-l-4 rounded bg-white cursor-pointer shadow-sm hover:bg-gray-100"
+    class="flex items-center mb-4 pl-2 py-2 border-l-4 rounded cursor-pointer shadow-sm hover:bg-gray-100"
     :class="getTodoClass(todo)"
     @click="handleShowDrawer"
   >

@@ -1,6 +1,7 @@
 <template>
   <div class="flex">
     <div class="w-1/6 h-screen py-8 bg-gray-100">
+      <div @click="toggleMode">暗色模式</div>
       <router-link
         class="flex items-center my-4 px-8 w-full"
         v-for="(menu, index) in menus"
@@ -12,7 +13,7 @@
         <span :class="{ 'text-blue-500': isActive }">{{ menu.name }}</span>
       </router-link>
     </div>
-    <router-view class="flex-1 h-screen p-8"/>
+    <router-view class="flex-1 h-screen p-8" :class="{ 'bg-gray-500': isDarkMode, 'bg-white': !isDarkMode }"/>
   </div>
 </template>
 
@@ -33,16 +34,34 @@ export default {
     }
   },
 
+  data() {
+    return {
+      mode: 'light'
+    }
+  },
+
   computed: {
     todolists() {
       return this.$store.state.todolists
+    },
+
+    isDarkMode() {
+      return this.mode === 'dark'
     }
   },
   
   methods: {
     addTodolist() {
       this.$store.commit('addTodo', { title: 'todo-title', done: false })
-    }
+    },
+
+    toggleMode() {
+      if (this.mode === 'light') {
+        this.mode = 'dark'
+      } else {
+        this.mode = 'light'
+      }
+    },
   }
 }
 </script>

@@ -1,8 +1,10 @@
 <template>
-  <div class="h-screen overflow-y-scroll">
-    <Input class="h-11" type="search" placeholder="回车搜索 todo" @input-change="handleInputChange"/>
+  <div class="pt-24 h-screen overflow-y-scroll">
+    <div class="fixed top-0 right-0 p-8 pb-4 w-5/6 bg-white opacity-95 z-10">
+      <Input class="h-11" type="search" placeholder="回车搜索 todo" @input-change="handleInputChange"/>
+    </div>
     <el-empty v-if="!lists.length" class="empty-content-height" :description="emptyTips"/>
-    <div class="mt-4" v-else>
+    <div v-else>
       <TodoList
         v-for="todo in lists"
         :key="todo.id"
@@ -18,19 +20,22 @@
 import { ITodo } from '@/constants'
 import Input from '@/components/Input.vue'
 import TodoList from '@/components/TodoList.vue'
+import TodoDetail from '@/components/TodoDetail.vue'
 
 export default {
   name: 'Search',
 
   components: {
     Input,
-    TodoList
+    TodoList,
+    TodoDetail,
   },
 
   data() {
     return {
       searchWord: '',
-      lists: []
+      lists: [],
+      showDrawer: false,
     }
   },
 
@@ -59,7 +64,7 @@ export default {
 
 <style>
   .empty-content-height {
-    height: calc(100vh - 7rem);
+    height: calc(100vh - 8rem);
     min-height: 260px;
   }
 </style>

@@ -21,6 +21,7 @@
     <div @drop="handleDrop" v-infinite-scroll="handleScrollLoad">
       <TodoList
         v-for="todo in todos"
+        class="todo-width"
         :key="todo.id"
         :draggable="true"
         :data-index="todo.id"
