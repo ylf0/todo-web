@@ -1,7 +1,6 @@
 <template>
   <div class="flex">
     <div class="w-1/6 h-screen py-8 bg-gray-100">
-      <div @click="toggleMode">暗色模式</div>
       <router-link
         class="flex items-center my-4 px-8 w-full"
         v-for="(menu, index) in menus"

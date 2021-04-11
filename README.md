@@ -26,6 +26,14 @@ yarn dev
 ```
 
 页面截图 ✂️ 
-> todo 页: 
+- todo 列表: 
 
-![todo 页](./src/assets/todo_screenshot.png)
+![todo list](https://ftp.bmp.ovh/imgs/2021/04/e50f8ba28b98bc4a.png)
+
+- todo 详情:
+
+![todo detail](https://ftp.bmp.ovh/imgs/2021/04/d1418171f63d2a83.png)
+
+- 搜索页:
+
+![search content](https://ftp.bmp.ovh/imgs/2021/04/12ee7f2b0fcbc29e.png)
