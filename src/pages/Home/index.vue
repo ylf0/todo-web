@@ -13,6 +13,9 @@
       </router-link>
     </div>
     <router-view class="flex-1 h-screen p-8" :class="{ 'bg-gray-500': isDarkMode, 'bg-white': !isDarkMode }"/>
+    <div class="fixed left-8 bottom-4 w-full">
+      <a href="https://beian.miit.gov.cn" target="_blank">皖ICP备20003040号-1</a>
+    </div>
   </div>
 </template>
 

@@ -1,26 +1,34 @@
-import { ROUTES } from '../constants'
-
-import Home from '@/pages/Home/index.vue'
-import Todo from '@/pages/Home/views/Todo.vue'
-import Search from '@/pages/Home/views/Search.vue'
-import Tag from '@/pages/Home/views/Tag.vue'
-import Note from '@/pages/Home/views/Note.vue'
-import NotFound from '../pages/NotFound/index.vue'
+import { ROUTES } from '@/constants'
 
 const routes = [
   {
     path: ROUTES.root,
     name: 'home',
-    component: Home,
+    component: () => import('@/pages/Home/index.vue'),
     redirect: ROUTES.todo,
     children: [
-      { path: ROUTES.todo, component: Todo },
-      { path: ROUTES.search, component: Search },
-      { path: ROUTES.tag, component: Tag },
-      { path: ROUTES.note, component: Note },
+      {
+        path: ROUTES.todo,
+        component: () => import('@/pages/Home/views/Todo.vue')
+      },
+      {
+        path: ROUTES.search,
+        component: () => import('@/pages/Home/views/Search.vue')
+      },
+      {
+        path: ROUTES.tag,
+        component: () => import('@/pages/Home/views/Tag.vue')
+      },
+      {
+        path: ROUTES.note,
+        component: () => import('@/pages/Home/views/Note.vue')
+      },
     ]
   },
-  { path: '/:pathMatch(.*)', component: NotFound }
+  {
+    path: '/:pathMatch(.*)',
+    component: () => import('@/pages/NotFound/index.vue')
+  }
 ]
 
 export default routes
